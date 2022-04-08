@@ -1,70 +1,44 @@
-# Getting Started with Create React App
+# 한입 크기로 잘라 먹는 리액트의 간단한 일기장 예제
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+해당 예제를 작성하며 새롭게 배운 내용과 마주했던 어려움에 대한 내용을 작성할 예정입니다.
 
-## Available Scripts
+1. state 묶기
 
-In the project directory, you can run:
+이전에는 비슷한 state더라도 각각의 state로 만들어서 관리했었다.
 
-### `npm start`
+비슷한 역할을 하는 state를 묶어서 관리하는 것이 눈으로 보기에도 코드를 짜기에도 편하단 것을 알았다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| 이전 코드
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```javascript
+let [author, setAuthor] = useState("");
+let [content, setContent] = useState("");
+```
 
-### `npm test`
+| 묶은 코드
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```javascript
+const [state, setState] = useState({
+  author: "",
+  content: "",
+});
+```
 
-### `npm run build`
+2. 비슷한 이벤트 핸들러 합치기
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+벤트 핸들러의 함수를 합치는 것은 처음해봤는데 만약 내가 시도했다면 매개변수를 줘서 state 별로 수정하는 방법을 사용했을 것이다. 하지만 이 방법은 효율적이지 못하다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+강의에선 input과 textarea에 name을 state로 설정한 키 값으로 해서 `e.target.name`으로 꺼내쓰는 방법을 사용했는데 정말 좋은 방법인 것 같다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```javascript
+const handleChangeState = (e) => {
+  setState({
+    ...state,
+    [e.target.name]: e.target.value,
+  });
+};
+```
 
-### `npm run eject`
+3. select 사용하기
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+select 태그를 사용해본 적이 별로 없었다. option 태그를 감싸는 select 태그를 만들어 value 속성과 onChange 속성을 주면 된다.
