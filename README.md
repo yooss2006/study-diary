@@ -42,3 +42,19 @@ const handleChangeState = (e) => {
 3. select 사용하기
 
 select 태그를 사용해본 적이 별로 없었다. option 태그를 감싸는 select 태그를 만들어 value 속성과 onChange 속성을 주면 된다.
+
+4. useRef를 이용해 focus 주기
+
+alert로 경고메시지를 주는 것은 디자인을 해칠 수 있다. 따라서 useRef를 이용해 focus를 주는 방법으로 경고를 알린다.
+
+useRef는 다음과 같은 방식으로 사용하는데
+
+```javascript
+const authorInput = useRef();
+```
+
+authorInput는 DOM요소에 접근할 수 있는 기능을 할 수 있게 된다.
+
+원하는 DOM 요소에 `ref={authorInput}` 속성을 넣어주고 어떠한 조건이 실행됐을 때 `authorInput.current.focus()`를 사용하면 해당 요소에 focus가 가게 할 수 있다.
+
+`authorInput.current`는 해당 DOM요소 자체를 의미한다.
