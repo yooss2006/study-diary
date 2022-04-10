@@ -2,6 +2,8 @@
 
 해당 예제를 작성하며 새롭게 배운 내용과 마주했던 어려움에 대한 내용을 작성할 예정입니다.
 
+<br>
+
 1. state 묶기
 
 이전에는 비슷한 state더라도 각각의 state로 만들어서 관리했었다.
@@ -24,6 +26,8 @@ const [state, setState] = useState({
 });
 ```
 
+<br>
+
 2. 비슷한 이벤트 핸들러 합치기
 
 벤트 핸들러의 함수를 합치는 것은 처음해봤는데 만약 내가 시도했다면 매개변수를 줘서 state 별로 수정하는 방법을 사용했을 것이다. 하지만 이 방법은 효율적이지 못하다.
@@ -39,9 +43,13 @@ const handleChangeState = (e) => {
 };
 ```
 
+<br>
+
 3. select 사용하기
 
 select 태그를 사용해본 적이 별로 없었다. option 태그를 감싸는 select 태그를 만들어 value 속성과 onChange 속성을 주면 된다.
+
+<br>
 
 4. useRef를 이용해 focus 주기
 
@@ -58,3 +66,27 @@ authorInput는 DOM요소에 접근할 수 있는 기능을 할 수 있게 된다
 원하는 DOM 요소에 `ref={authorInput}` 속성을 넣어주고 어떠한 조건이 실행됐을 때 `authorInput.current.focus()`를 사용하면 해당 요소에 focus가 가게 할 수 있다.
 
 `authorInput.current`는 해당 DOM요소 자체를 의미한다.
+
+<br>
+
+5. props로 undefined가 넘어오는 상황을 대비하자.
+
+props로 배열이 넘어와야하는데 undefined가 넘어오는 경우가 있다. 이때 defaultProps를 이용해 기본 값을 설정하자.
+
+```javascript
+DiaryList.defaultProps = {
+  diaryList: [],
+};
+```
+
+<br>
+
+6. props에 스프레드 연산자 사용하기
+
+props에 스프레드 연산자를 사용해 한번에 데이터를 보낼 수 있다.
+
+```javascript
+<DiaryItem {...item} />
+```
+
+<br>
