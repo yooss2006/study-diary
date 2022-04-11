@@ -1,6 +1,6 @@
 import React from "react";
 
-const DiaryItem = ({ author, content, created_date, emotion, id }) => {
+const DiaryItem = ({ author, content, created_date, emotion }) => {
   return (
     <div className="DiaryItem">
       <div className="info">
@@ -13,6 +13,7 @@ const DiaryItem = ({ author, content, created_date, emotion, id }) => {
         </span>
       </div>
       <div className="content">{content}</div>
+      <button>삭제하기</button>
     </div>
   );
 };
