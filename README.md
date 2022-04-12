@@ -244,3 +244,32 @@ const MemoizedCounterB = React.memo(자식, areEqual);**
 ```
 
 MemoizedCounterB를 부모 컴포넌트에서 불러서 사용하면 된다.
+
+<br>
+
+**useCallback**
+
+자식 컴포넌트에서 부모 state를 변경하는 함수를 사용하는 경우 함수가 불필요하게 계속 만들어지는 사태가 발생한다.
+
+useMemo와 다른 점은 useMemo는 함수가 아닌 값을 반환하는 것이고 useCallback은 값이 아닌 콜백함수를 반환하는 것이다.
+
+```jsx
+const onCreate = useCallback((author, content, emotion) => {
+...
+},[]);
+```
+
+마찬가지로 첫번째 매개변수로 콜백함수를 두번째 매개변수로 의존성 배열을 받는다.
+
+의존성 배열안의 값이 변화되지 않으면 첫번째 값에 들어갔던 콜백함수를 계속 재사용한다.
+
+```jsx
+const onCreate = useCallback((author, content, emotion) => {
+   ...
+    setData((data)=>[newItem, ...data]);
+  },[]);
+```
+
+state를 변화하는 함수에 함수를 넣는 것을 함수형 업데이트
+
+의존성 배열을 비워도 최신의 state를 인자를 통해 참고해서 가능해진다.
