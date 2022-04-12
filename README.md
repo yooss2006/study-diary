@@ -2,6 +2,10 @@
 
 해당 예제를 작성하며 새롭게 배운 내용과 마주했던 어려움에 대한 내용을 작성할 예정입니다.
 
+자세한 내용은 노션에 정리했습니다.
+
+[노션링크](https://supreme-balance-5ba.notion.site/a9a20d56e2894e13b6a15ac19f080fe0)
+
 <br>
 
 1. state 묶기
@@ -154,3 +158,58 @@ useEffect(() => {
 ```
 
 위 경우 &&는 and 연산자이므로 앞의 요소가 false면 뒤의 요소는 볼것도 없이 false를 반환한다. 이러한 특성을 이용한 것이다.
+
+<br>
+
+9. React Developer Tools
+
+리액트 개발시 생산성을 높여주는 개발자 도구이며 크롬 웹 스토어에 해당 개발자도구를 설치하면 된다.
+
+설치시 개발자모드로 들어가보면 리액트로 만들어진 웹페이지에선 components, profiler 라는 탭이 추가된다.
+
+**components 탭**
+
+- react로 개발중인 컴포넌트들의 계층 구조파악이 용이하다.
+- 해당 컴포넌트들이 어떤 props, state 등을 가지고 있는지 파악할 수 있다.
+
+톱니바퀴 모양을 클릭해 general의 `Highlight updates when components render.` 옵션을 선택해주자.
+
+해당 옵션은 웹페이지의 어떠한 동작시 무슨 컴포넌트에서 리렌더링이 일어나는지 명시적으로 보여준다.
+
+<br>
+
+10. 컴포넌트 최적화 기법
+
+**Memoization을 이용한 연산 최적화 기법 - useMemo**
+
+이미 계산한 연산 결과를 기억해두었다가 동일한 연산시 기억한 데이터를 반환하는 방법
+
+컴포넌트 안에 함수를 만들고 값을 반환한는 경우, state가 바뀌면 컴포넌트가 다시 렌더링되며 함수도 다시 불러오게 된다.
+
+메모리적으로 낭비를 하게되므로 **useMemo** 사용이 필요하다.
+
+```jsx
+const getDiaryAnalysis = useMemo(() => {
+  console.log("일기분석 시작");
+  return { goodCount, badCount, goodRatio };
+}, []);
+```
+
+기본 구조는 다음과 같다. useMemo는
+
+- 첫번째 매개변수로 콜백함수
+- 두번째 매개변수로 의존성 배열
+
+이 들어간다.
+
+**콜백함수**에서는 연산을 수행 후 값을 `return` 한다.
+
+**의존성 배열** 안에 데이터를 넣으면 해당 데이터가 바뀔 때만 함수의 연산을 다시 수행한다.
+
+useMemo를 사용한 경우 더이상 함수가 아니게된다. 따라서 뒤에 괄호를 붙이면 안된다.
+
+```jsx
+const { goodCount, badCount, goodRatio } = getDiaryAnalysis;
+```
+
+- 이유는 값을 리턴한 것 자체를 받는 것이기 때문이다
