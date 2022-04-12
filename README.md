@@ -213,3 +213,34 @@ const { goodCount, badCount, goodRatio } = getDiaryAnalysis;
 ```
 
 - 이유는 값을 리턴한 것 자체를 받는 것이기 때문이다
+
+<br>
+
+**컴포넌트 재사용 - react.memo**
+
+부모 컴포넌트가 state의 변경으로 리렌더링되면 상관없는 자식 컴포넌트도 리렌더링되는데 이에 발생하는 낭비가 있다.
+
+> 자식 컴포넌트에서 부모한테 받은 props가 변경될때만 리렌더링 되게 업데이트 조건을 걸 수 있다.
+
+```jsx
+//자식 컴포넌트
+const 자식 = react.memo(({ props }) => {});
+```
+
+React.memo를 사용하면 부모 컴포넌트에서 state를 변경할 때 같은 state로 변경하는 경우도 캐치해 리렌더링을 방지할 수 있다.
+
+예외적으로 객체는 같은 객체로 변경해도 리렌더링을 하는데 이는 얕은 비교를 하기 때문이다. 이를 막기위해선 **비교함수를** 따로 만들어준다.
+
+비교함수에서 true를 반환하면 같은 객체, fasle를 반환하면 다른 객체로 판단한다.
+
+```jsx
+const 자식 = ({props})=>{
+};
+**const areEqual = (prevProps, nextProps) => {
+	if(prevProps.count === nextProps.count)return true;
+	return false
+}
+const MemoizedCounterB = React.memo(자식, areEqual);**
+```
+
+MemoizedCounterB를 부모 컴포넌트에서 불러서 사용하면 된다.
