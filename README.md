@@ -273,3 +273,147 @@ const onCreate = useCallback((author, content, emotion) => {
 state를 변화하는 함수에 함수를 넣는 것을 함수형 업데이트
 
 의존성 배열을 비워도 최신의 state를 인자를 통해 참고해서 가능해진다.
+
+<br>
+
+자식 컴포넌트에서 부모 state를 변경하는 함수를 사용하는 경우 함수가 불필요하게 계속 만들어지는 사태가 발생한다.
+
+useMemo와 다른 점은 useMemo는 함수가 아닌 값을 반환하는 것이고 useCallback은 값이 아닌 콜백함수를 반환하는 것이다.
+
+```jsx
+const onCreate = useCallback((author, content, emotion) => {
+...
+  },[]);
+```
+
+마찬가지로 첫번째 매개변수로 콜백함수를 두번째 매개변수로 의존성 배열을 받는다.
+
+의존성 배열안의 값이 변화되지 않으면 첫번째 값에 들어갔던 콜백함수를 계속 재사용한다.
+
+```jsx
+const onCreate = useCallback((author, content, emotion) => {
+   ...
+    setData((data)=>[newItem, ...data]);
+  },[]);
+```
+
+state를 변화하는 함수에 함수를 넣는 것을 함수형 업데이트
+
+의존성 배열을 비워도 최신의 state를 인자를 통해 참고해서 가능해진다.
+
+<br>
+
+**useReducer**
+
+복잡한 상태 로직을 컴포넌트로부터 분리하는 기능을 수행한다.
+
+- 컴포넌트가 길어지는 것은 좋지 않아 이를 방지한다.
+
+```jsx
+const [count, dispatch] = useReducer(reducer, 1);
+```
+
+state(`count`)와 상태변화를 담당하는 action 발생 함수(`dispatch`)로 구성된다.
+
+`useReducer`를 하려면 `reducer`라는 함수를 첫번째 매개변수로 넣어줘야한다. 이는 `dispatch`가 일으킨 상태변화를 처리해주는 역할을 한다.
+
+두번째 매개변수는 count의 초기 값을 의미한다.
+
+```jsx
+onClick={()=>dispatch({type:10})}
+```
+
+`dispatch`를 호출하려면 `type`이라는 키가 들어간 객체를 전달해야한다. 이 객체를 `action` 객체라고 한다.
+
+`dispatch`를 호출하면 `action` 객체는 `reducer` 함수로 넘어간다.
+
+```jsx
+const reducer = (state, action) => {
+	switch (action.type) {
+		case 1:
+			return state + 1;
+	...
+		default:
+			return state;
+	}
+}
+```
+
+`reducer` 함수는 최신의 state와 dispatch시 넘긴 action을 매개변수로 받는다.
+
+해당 action에 해당하는 type의 case로 넘어가 반환한 값이 최신의 state가 되는 방식으로 작동한다.
+
+이를 사용하면 useCallback과 병행시 의존성 배열을 걱정할 필요가 없다.
+
+<br>
+
+**context**
+
+부모컴포넌트에서 자식컴포넌트로 props를 전달할 때 중간에 전달만 하는 컴포넌트가 존재하는데 이는 좋지 못하다. 이러한 현상을 **props drilling**이라고 한다.
+
+props drilling을 해결하기 위해 만든 것이 **context**이다.
+
+- 모든 데이터를 Provider라는 공급자 컴포넌트에게 전달한다.
+- Provider는 자손의 컴포넌트에게 직통으로 데이터를 전달해준다. 이때 value라는 props로 전달하게 된다.
+
+```jsx
+context 생성
+const MyContext = React.createContext(defaultValue);
+
+데이터 공급
+<MyContext.Provider value={전달하고자 하는 값}>
+	{자식 컴포넌트들 위치}
+</MyContext.Provider>
+```
+
+예시를 들어보면
+
+1. context를 생성
+
+- export한 이유는 다른 컴포넌트 파일에서 해당 context를 불러오기 위함
+
+```jsx
+export const DiaryStateContext = React.createContext();
+```
+
+1. 데이터 공급을 위해 컴포넌트들 감싸기
+
+```jsx
+<DiaryStateContext.Provider value={data}>
+  <div className="App">
+    <header className="App-header"></header>
+    <DiaryEditor />
+    <DiaryList />
+  </div>
+</DiaryStateContext.Provider>
+```
+
+1. context에서 정보를 꺼내오기
+
+- export한 컴포넌트에서 import 해와야 한다.
+
+```jsx
+import { DiaryDispatchContext } from "./App";
+const DiaryEditor = () => {
+  const { onCreate } = useContext(DiaryDispatchContext);
+```
+
+글생성, 글삭제, 글수정과 같은 기능을 value 값으로 data와 같이 전달하면 Provider도 컴포넌트이기에 불필요한 리렌더링이 발생하게 된다.
+
+이때는 `context`를 하나 더 만들면 된다. 원하는 만큼 만들자.
+
+팁은 위 세 함수를 하나로 묶는 과정에서 useMemo를 사용한다. 그 이유는 리렌더링이 발생했을 때 함수까지 새로 만들 필요는 없기 때문이다.
+
+```jsx
+export const DiaryDispatchContext = React.createContext();
+...
+const memoizedDispatches = useMemo(() => {
+    return { onCreate, onEdit, onRemove };
+  }, []);
+...
+<DiaryStateContext.Provider value={data}>
+  <DiaryDispatchContext.Provider value={memoizedDispatches}>
+  ...
+  </DiaryDispatchContext.Provider>
+</DiaryStateContext.Provider>
+```
